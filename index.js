@@ -1,10 +1,11 @@
 import { createServer } from 'http'; // Load HTTP package
 
+let port=3000;
+
 let todos = []; // In-memory storage for todos
 
 createServer((req, res) => {
     res.setHeader('Content-Type', 'application/json');
-
     if (req.method === 'GET' && req.url === '/getAllTodos') {
         // Return all todos
         res.writeHead(200);
@@ -12,10 +13,12 @@ createServer((req, res) => {
     } else if (req.method === 'POST' && req.url === '/addTodo') {
         // Collect request data
         let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
-        
+        setTimeout(()=>{
+            req.on('data', chunk => {
+                console.log(chunk);    
+                body += chunk.toString();
+            });
+        },15000);
         req.on('end', () => {
             try {
                 const { todo } = JSON.parse(body);
@@ -36,6 +39,6 @@ createServer((req, res) => {
         res.writeHead(404);
         res.end(JSON.stringify({ error: 'Route not found' }));
     }
-}).listen(3000, () => {
-    console.log('Server running on port 3000');
+}).listen(port, () => {
+    console.log('Server running on port '+ port);
 });
